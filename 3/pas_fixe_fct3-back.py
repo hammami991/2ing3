@@ -1,19 +1,19 @@
 import numpy
 
-#Definition de la fonction 2
-def fct2(x):
-    y = numpy.asarray(x)
-    return numpy.sum(y[0]**2+y[1]**4)
 
-#Calcul du gradient de la fonction 2
-def fct2Gradient(x):
+#Fonction de Rosenbrock
+def fct3(x):
+    y = numpy.asarray(x)
+    return numpy.sum((y[0]-1)**2+100*(y[1]-y[0]**2)**2)
+
+def fct3Gradient(x):
     y = numpy.asarray(x)
     grad = numpy.zeros_like(y)
-    grad[0] = 2*y[0]
-    grad[1] = 4*(y[1]**3)
+    grad[0] = 400*y[0]*(y[0]**2-y[1])+2*(y[0]-1)
+    grad[1] = 200*(y[1]-y[0]**2)
     return grad
 
-#Definition de la fonction pour le calcul du gradient a pas fixe.
+
 def Gradient_Pas_Fixe(f,f_grad,gradient_error,point_error,x0,Tolerance,NB_ITR):
     dimension = numpy.max(numpy.shape(x0))
     XArray = numpy.zeros([dimension,NB_ITR])
@@ -31,12 +31,11 @@ def Gradient_Pas_Fixe(f,f_grad,gradient_error,point_error,x0,Tolerance,NB_ITR):
         fArray[i] = ff
         point_error_array[i] = numpy.linalg.norm(x - xx)
         gradient_error_array[i] = numpy.linalg.norm(grad)
-        if i % 100 == 0: #Affichage des rèsultas chaque 100 itération
+        if i % 100 == 0:
             print(f"Iteration={i+1}, x={x}, f(x)={f(x)}")
         if (point_error_array[i]<point_error)|(gradient_error_array[i]<gradient_error):
             break
         xx = x
-    #Affichage du résultat final
     print("---------------------------------------------------------")
     print("Final Results:\n")
     print(f"x={x}\nIteration={i+1}\nf(x)={f(x)}")
@@ -44,10 +43,9 @@ def Gradient_Pas_Fixe(f,f_grad,gradient_error,point_error,x0,Tolerance,NB_ITR):
     return {'XArray':XArray[:,0:i],'fArray':fArray[0:i],'point_error_array':point_error_array[0:i],'point_error_array':point_error_array[0:i]}
 
 
-x0 = numpy.array([1.1,2.1]) 
-point_error = 10**-5
-gradient_error = 10**-5
+x0 = numpy.array([1.1,2.1])
+point_error = 10**-10
+gradient_error = 10**-10
 
 
-#Appel de la fonction de calcul du gradient a pas fixe.
-Gradient_Pas_Fixe(fct2,fct2Gradient,gradient_error,point_error,x0,10**-3,10000)
+Gradient_Pas_Fixe(fct3,fct3Gradient,gradient_error,point_error,x0,10**-3,10000)
